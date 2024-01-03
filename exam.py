@@ -66,45 +66,46 @@ class ExamDetectorConstruction(G4VUserDetectorConstruction):
 #..........
 
 #Primary Generator
-class XXPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
-   def __init__(self):
-      super().__init__()
-      self.fEnvelopeBox = None
-      self.fParticleGun = G4ParticleGun(1)
+class ExamPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
+    def __init__(self):
+        super().__init__()
+        self.fEnvelopeBox = None
+        self.fParticleGun = G4ParticleGun(1)
 
-   particleTable = G4ParticleTable.GetParticleTable()
-   particle = particleTable.FindParticle("neutron")
-   self.fParticleGun.SetParticleDefinition(particle)
-   self.fParticleGun.SetParticleMomentumDirection(G4ThreeVector(0, 0, -1))
-   self.fParticleGun.SetParticleEnergy(10*MeV)
+    particleTable = G4ParticleTable.GetParticleTable()
+    particle = particleTable.FindParticle("neutron")
+    self.fParticleGun.SetParticleDefinition(particle)
+    self.fParticleGun.SetParticleMomentumDirection(G4ThreeVector(0, 0, -1))
+    self.fParticleGun.SetParticleEnergy(10*MeV)
 
 def GeneratePrimaries(self, anEvent):
-   envSizeX = 30*cm
-   envSizeY = 60*cm
-   envSizeZ = 30*cm
+    envSizeX = 30*cm
+    envSizeY = 60*cm
+    envSizeZ = 30*cm
 
     if self.fEnvelopeBox == None:
-       envLV = G4LogicalVolumeStore.GetInstance().GetVolume("Envelope")
-       if envLV != None:
-          self.fEnvelopeBox = envLV.GetSolid()
+        envLV = G4LogicalVolumeStore.GetInstance().GetVolume("Envelope")
+        if envLV != None:
+            self.fEnvelopeBox = envLV.GetSolid()
           
-       if self.fEnvelopeBox != None:
-          envSizeX = self.fEnvelopeBox.GetXHalfLength()*2
-          envSizeY = self.fEnvelopeBox.GetYHalfLength()*2
-          envSizeZ = self.fEnvelopeBox.GetYHalfLength()*2
-       else:
-          msg = "Envelope volume of box shape not found.\n"
-          msg += "Perhaps you have changed geometry.\n"
-          msg += "The gun will be place at the center."
-          G4Exception("XXPrimaryGeneratorAction::GeneratePrimaries()", "MyCode0002", G4ExceptionSeverity.JustWarning, msg)
+        if self.fEnvelopeBox != None:
+            envSizeX = self.fEnvelopeBox.GetXHalfLength()*2
+            envSizeY = self.fEnvelopeBox.GetYHalfLength()*2
+            envSizeZ = self.fEnvelopeBox.GetYHalfLength()*2
+        else:
+            msg = "Envelope volume of box shape not found.\n"
+            msg += "Perhaps you have changed geometry.\n"
+            msg += "The gun will be place at the center."
+            G4Exception("ExamPrimaryGeneratorAction::GeneratePrimaries()", "MyCode0002", G4ExceptionSeverity.JustWarning, msg)
 
-       size = 0.5
-       x0 = 0 #size * envSizeX # * (G4UniformRand() - 0.5)
-       y0 = 0 # size * envSizeY * (G4UniformRand() - 0.5)
-       z0 = size * envSizeZ
 
-       self.fParticleGun.SetParticlePosition(G4ThreeVector(x0, y0, z0))
-       self.fParticleGun.GeneratePrimaryVertex(anEvent)
+        size = 0.5
+        x0 = 0 #size * envSizeX # * (G4UniformRand() - 0.5)
+        y0 = 0 # size * envSizeY * (G4UniformRand() - 0.5)
+        z0 = size * envSizeZ
+
+        self.fParticleGun.SetParticlePosition(G4ThreeVector(x0, y0, z0))
+        self.fParticleGun.GeneratePrimaryVertex(anEvent)
 #End of primary generator
 
 
