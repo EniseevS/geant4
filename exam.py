@@ -75,7 +75,7 @@ class ExamPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
         particleTable = G4ParticleTable.GetParticleTable()
         particle = particleTable.FindParticle("neutron")
         self.fParticleGun.SetParticleDefinition(particle)
-        self.fParticleGun.SetParticleMomentumDirection(G4ThreeVector(0, 0, -1))
+        self.fParticleGun.SetParticleMomentumDirection(G4ThreeVector(1, 0, 0))
         self.fParticleGun.SetParticleEnergy(10*MeV)
 
     def GeneratePrimaries(self, anEvent):
@@ -84,7 +84,7 @@ class ExamPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
         envSizeZ = 0
     
         if self.fEnvelopeBox == None:
-            envLV = G4LogicalVolumeStore.GetInstance().GetVolume("Envelope")
+            envLV = G4LogicalVolumeStore.GetInstance().GetVolume("World")
 
             if envLV != None:
                 self.fEnvelopeBox = envLV.GetSolid()
@@ -92,7 +92,7 @@ class ExamPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
             if self.fEnvelopeBox != None:
                 envSizeX = self.fEnvelopeBox.GetXHalfLength()*2
                 envSizeY = self.fEnvelopeBox.GetYHalfLength()*2
-                envSizeZ = self.fEnvelopeBox.GetYHalfLength()*2
+                envSizeZ = self.fEnvelopeBox.GetZHalfLength()*2
             else:
                 msg = "Envelope volume of box shape not found.\n"
                 msg += "Perhaps you have changed geometry.\n"
@@ -100,15 +100,23 @@ class ExamPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
                 G4Exception("ExamPrimaryGeneratorAction::GeneratePrimaries()", "MyCode0002", G4ExceptionSeverity.JustWarning, msg)
 
 
-            size = 0.5
-            x0 = size * envSizeX * (G4UniformRand() - 0.5)
-            y0 = size * envSizeY * (G4UniformRand() - 0.5)
-            z0 = size * envSizeZ
-
+            #size = 0.5
+            x0 = -0.5 * envSizeX
+            y0 = 0
+            z0 = 0
             self.fParticleGun.SetParticlePosition(G4ThreeVector(x0, y0, z0))
             self.fParticleGun.GeneratePrimaryVertex(anEvent)
 #End of primary generator
 
+#..........
+
+#Action Initialization
+
+class ExamActionInitialization(G4VUserActionInitialization):
+    
+    def Build(self) -> None:
+        self.SetUserAction(ExamPrimaryGeneratorAction())
+#End of Action Initialization
 
 
 ui = None
@@ -129,7 +137,7 @@ physicsList.SetVerboseLevel(1)
 runManager.SetUserInitialization(physicsList)
 
 # User action initialization
-#runManager.SetUserInitialization(ExamActionInitialization())
+runManager.SetUserInitialization(ExamActionInitialization())
 
 visManager = G4VisExecutive()
 # G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
