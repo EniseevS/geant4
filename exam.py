@@ -99,8 +99,6 @@ class ExamPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
                 msg += "The gun will be place at the center."
                 G4Exception("ExamPrimaryGeneratorAction::GeneratePrimaries()", "MyCode0002", G4ExceptionSeverity.JustWarning, msg)
 
-
-            #size = 0.5
             x0 = -0.5 * envSizeX
             y0 = 0
             z0 = 0
