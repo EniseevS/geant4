@@ -70,8 +70,6 @@ class ExamDetectorConstruction(G4VUserDetectorConstruction):
       return pWorld
 # End of detector construction
 
-#..........
-
 # Action initialization
 class ExamActionInitialization(G4VUserActionInitialization):
 
@@ -100,12 +98,12 @@ class ExamPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
         particleTable = G4ParticleTable.GetParticleTable()
         particle = particleTable.FindParticle("neutron")
         self.fParticleGun.SetParticleDefinition(particle)
-        self.fParticleGun.SetParticleMomentumDirection(G4ThreeVector(1, 0, 0))
+        self.fParticleGun.SetParticleMomentumDirection(G4ThreeVector(0, 0, 1)
         self.fParticleGun.SetParticleEnergy(10*MeV)
 
     def GeneratePrimaries(self, anEvent):
-        #envSizeX = 0
-        #envSizeY = 0
+        envSizeX = 0
+        envSizeY = 0
         envSizeZ = 0
     
         if self.fEnvelopeBox == None:
@@ -124,9 +122,9 @@ class ExamPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
                 msg += "The gun will be place at the center."
                 G4Exception("ExamPrimaryGeneratorAction::GeneratePrimaries()", "MyCode0002", G4ExceptionSeverity.JustWarning, msg)
 
-            x0 = 0
+            x0 = envSizeX * (G4UniformRand() - 0.5)
             y0 = 0
-            z0 = -0.5 * envSizeX * (G4UniformRand() - 0.5)
+            z0 = -0.5
             self.fParticleGun.SetParticlePosition(G4ThreeVector(x0, y0, z0))
             self.fParticleGun.GeneratePrimaryVertex(anEvent)
 # End of primary generator
@@ -207,45 +205,6 @@ class ExamRunAction(G4UserRunAction):
         self.edep += edep
         self.edep2 += edep*edep
 # End of run action
-
-# Event Action
-class ExamEventAction(G4UserEventAction):
-    def __init__(self, runAction):
-        super().__init__()
-        self.fRunAction = runAction
-    
-    def BeginOfEventAction(self, anEvent):
-        self.fEdep = 0
-     
-    def EndOfEventAction(self, anEvent):
-        self.fRunAction.AddEdep(self.fEdep)
-     
-    def AddEdep(self, edep):
-        self.fEdep += edep
-# End of event action
-
-# Stepping action
-class ExamSteppingAction(G4UserSteppingAction):
-    def __init__(self, eventAction):
-        super().__init__()
-        self.fEventAction = eventAction
-        self.fScoringVolume = None
- 
-    def UserSteppingAction(self, aStep):
-        if self.fScoringVolume == None:
-            detectorConstruction = G4RunManager.GetRunManager().GetUserDetectorConstruction()
-            self.fScoringVolume = detectorConstruction.fScoringVolume
- 
-        volume = aStep.GetPreStepPoint().GetTouchable().GetVolume().GetLogicalVolume()
- 
-        # check if we are in scoring volume
-        if volume != self.fScoringVolume:
-            return
- 
-        # collect energy deposited in this step
-        edepStep = aStep.GetTotalEnergyDeposit()
-        self.fEventAction.AddEdep(edepStep)
-# End of stepping action
 
 # Event Action
 class ExamEventAction(G4UserEventAction):
