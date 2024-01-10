@@ -98,7 +98,11 @@ class ExamPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
         particleTable = G4ParticleTable.GetParticleTable()
         particle = particleTable.FindParticle("neutron")
         self.fParticleGun.SetParticleDefinition(particle)
+<<<<<<< HEAD
         self.fParticleGun.SetParticleMomentumDirection(G4ThreeVector(0, 0, 1))
+=======
+        self.fParticleGun.SetParticleMomentumDirection(G4ThreeVector(1, 0, 0))
+>>>>>>> ed79be2 (Решение экзаменационной задачи.)
         self.fParticleGun.SetParticleEnergy(10*MeV)
 
     def GeneratePrimaries(self, anEvent):
@@ -122,9 +126,9 @@ class ExamPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
                 msg += "The gun will be place at the center."
                 G4Exception("ExamPrimaryGeneratorAction::GeneratePrimaries()", "MyCode0002", G4ExceptionSeverity.JustWarning, msg)
 
-            x0 = envSizeX * (G4UniformRand() - 0.5)
-            y0 = 0
-            z0 = -0.5
+            x0 = -0.5 * envSizeX
+            y0 = 0 * envSizeY
+            z0 = 0 * envSizeZ
             self.fParticleGun.SetParticlePosition(G4ThreeVector(x0, y0, z0))
             self.fParticleGun.GeneratePrimaryVertex(anEvent)
 # End of primary generator
