@@ -123,8 +123,8 @@ class ExamPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
                 G4Exception("ExamPrimaryGeneratorAction::GeneratePrimaries()", "MyCode0002", G4ExceptionSeverity.JustWarning, msg)
 
             x0 = -0.5 * envSizeX
-            y0 = 0 * envSizeY
-            z0 = 0 * envSizeZ
+            y0 = 0 
+            z0 = 0 
             self.fParticleGun.SetParticlePosition(G4ThreeVector(x0, y0, z0))
             self.fParticleGun.GeneratePrimaryVertex(anEvent)
 # End of primary generator
