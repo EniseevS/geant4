@@ -98,7 +98,7 @@ class ExamPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
         particleTable = G4ParticleTable.GetParticleTable()
         particle = particleTable.FindParticle("neutron")
         self.fParticleGun.SetParticleDefinition(particle)
-        self.fParticleGun.SetParticleMomentumDirection(G4ThreeVector(0, 0, 1)
+        self.fParticleGun.SetParticleMomentumDirection(G4ThreeVector(0, 0, 1))
         self.fParticleGun.SetParticleEnergy(10*MeV)
 
     def GeneratePrimaries(self, anEvent):
